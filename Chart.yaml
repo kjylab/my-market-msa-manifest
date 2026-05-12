@@ -1,0 +1,6 @@
+apiVersion: v2
+name: MyMarketMSAService
+description: My Market MSA Service
+type: application
+version: 0.0.1
+appversion: "1.0.0"

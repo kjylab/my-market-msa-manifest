@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount | default 2 }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          
+          ports:
+            - name: http
+              containerPort: {{ .Values.appConfig.server.port | default 8080 }}
+              protocol: TCP
+            {{- if .Values.appConfig.grpc.server }}
+            - name: grpc
+              containerPort: {{ .Values.appConfig.grpc.server.port | default 9090 }}
+              protocol: TCP
+            {{- end }}
+
+          args:
+            - "--spring.config.location=optional:classpath:/,optional:file:/config/application.yaml"
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              readOnly: true
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-config
