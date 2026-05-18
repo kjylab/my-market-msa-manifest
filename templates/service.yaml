@@ -7,16 +7,15 @@ spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
   ports: 
     - name: http
-      port: 80
-      targetport: {{ .Values.appConfig.server.port | default 8080 }}
+      port: {{ .Values.service.port | default 8080 }}
+      targetPort: {{ .Values.appConfig.server.port | default 8080 }}
       protocol: TCP
 
     {{- if .Values.appConfig.grpc.server }}
     - name: grpc
       port: 9090
-      targetport: {{ .Values.appConfig.grpc.server.port | default 9090 }}
+      targetPort: {{ .Values.appConfig.grpc.server.port | default 9090 }}
       protocol: TCP
     {{- end }}
   selector:
     app: {{ .Release.Name }}
-
