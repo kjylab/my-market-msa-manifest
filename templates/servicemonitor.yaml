@@ -13,6 +13,8 @@ spec:
   selector:
     matchLabels:
       app: {{ .Release.Name }}
+  podTargetLabels:
+    - app
   endpoints:
     - port: http
       path: /prometheus
