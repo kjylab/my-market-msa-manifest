@@ -33,6 +33,11 @@ spec:
           args:
             - "--spring.config.location=optional:classpath:/,optional:file:/config/application.yaml"
 
+          {{- if .Values.envFrom }}
+          envFrom:
+            {{- toYaml .Values.envFrom | nindent 12 }}
+          {{- end }}
+
           volumeMounts:
             - name: config-volume
               mountPath: /config
