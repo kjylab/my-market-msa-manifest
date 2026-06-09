@@ -1,0 +1,12 @@
+{{- if gt (int (.Values.replicaCount | default 2)) 1 }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}-pdb
+  namespace: {{ .Release.Namespace }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+{{- end }}
